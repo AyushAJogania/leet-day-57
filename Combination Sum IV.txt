@@ -1,0 +1,24 @@
+#include <vector>
+
+class Solution {
+public:
+    int combinationSum4(std::vector<int>& nums, int target) {
+        std::vector<unsigned long long> dp(target + 1, 0); // Use unsigned long long
+        dp[0] = 1ULL; // Initialize with 1ULL
+        
+        for (int i = 1; i <= target; ++i) {
+            for (int num : nums) {
+                if (i >= num) {
+                    // Check for potential overflow before addition
+                    if (dp[i] <= (std::numeric_limits<unsigned long long>::max() - dp[i - num])) {
+                        dp[i] += dp[i - num];
+                    } else {
+                        dp[i] = std::numeric_limits<unsigned long long>::max();
+                    }
+                }
+            }
+        }
+        
+        return dp[target] <= std::numeric_limits<int>::max() ? static_cast<int>(dp[target]) : 0;
+    }
+};
